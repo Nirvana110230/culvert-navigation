@@ -1,0 +1,51 @@
+{
+  "source_head": "unborn",
+  "source_symbolic_head": "refs/heads/codex/round1",
+  "source_index_sha256": "07ef0dec3b0b168a484d4c05b307af4b1b3c2c512b2b68a924aeabab393b67c2",
+  "indexed_entries": 342,
+  "r1": "CONDITIONAL GO。隔离 v3 同刻接口与适配器，历史板端 11 项 GoogleTest、25 项 ROS 集成断言。正式配置缺实测 T_imu_base 和运动限值，生产输出闭锁。",
+  "r2": "CONDITIONAL GO。两个后端、模式 A/B、联合离线重放与同袋留一回归。近初值 GICP 为候选，独立建图、跨次实车复访、锚点和绝对轨迹真值待核验。",
+  "historical_holdout": [
+    {
+      "backend": "icp",
+      "n": 62,
+      "n_expected_accept": 53,
+      "correct_accepted": 38,
+      "correct_rejected": 9,
+      "false_accepted": 12
+    },
+    {
+      "backend": "gicp",
+      "n": 62,
+      "n_expected_accept": 53,
+      "correct_accepted": 45,
+      "correct_rejected": 9,
+      "false_accepted": 2
+    }
+  ],
+  "historical_frozen_binary": "912f30512f2d6ebea6febd13583a5d37982b85e1b91cb5a9b28d9b60a9da8cad",
+  "small_gicp": {
+    "commit": "fa0cfc983417c044b6036f71dfa448038bb9c820",
+    "expected_tree": "ddfae80300c3fa21fd761ebacc7b8e36659f8aa4",
+    "reconstructed_tree": "ddfae80300c3fa21fd761ebacc7b8e36659f8aa4",
+    "files": 153,
+    "archive_sha256": "5a1eb2b81a21b4715571b4e953fa9c3759a4ae24f6b4a4b7d6c2ef0501ffb935"
+  },
+  "evidence_sha256": {
+    "docs/2026-11-25/00_第一轮工作总览.md": "6be012617fd2c2ca7613279189f529cab6d11616680ab9f0119bf03a9d199e52",
+    "patches/fast_livo2_culvert_source.patch": "8454af256a47e91e9aa9ea7576ac9f2ea1bf1e6ffea9e751fcc56d5c30f0c12e",
+    "docs/2026-11-25/evidence/protection-result.json": "0424c7a7de88e5c73ffc12f835560fd3b7694126044e5422a2d7adf54d719a52",
+    "docs/R2_2026-11-25/00_R2工作总览与阶段结论.md": "8f63b10cfdc60cb02262ea432e4874e8de2af9d953d57aca1ab097bb653b9947",
+    "docs/R2_2026-11-25/evidence/delivery-verification.json": "4fb573a3f7bcd976946e6371b00ce7d970e72a5372c353c7ebbe95f12b18c81f",
+    "docs/R2_2026-11-25/evidence/upstream-verification.json": "9e61d2804bf76ab9b4503cca2ce7c441a272c4f9c15713c44ff72ab76d8c3e66",
+    "benchmarks/r2/results/cases.csv": "d50d4d6ff013796142dca15a39c53d4a7f2a87a22ea5d4eb42023d18f9e21096",
+    "benchmarks/r2/results/summary.json": "683b076d6a7cc0cf2bcf455270b93a86047a404bae00d7dcea37671315c9b2a2"
+  },
+  "licenses": {
+    "culvert_livo_adapter": "LicenseRef-Undetermined",
+    "culvert_registration": "LicenseRef-Undetermined；保留 legacy、Sophus、nanoflann、small_gicp notices",
+    "culvert_localization": "包声明 Apache-2.0",
+    "small_gicp": "MIT；冻结压缩包与展开源码保存在受限介质"
+  },
+  "distribution": "本地交接，权属、设备信息复核完成前禁止上传。"
+}

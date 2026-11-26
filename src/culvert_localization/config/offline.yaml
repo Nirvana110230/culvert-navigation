@@ -1,0 +1,20 @@
+culvert_localization:
+  ros__parameters:
+    use_sim_time: true
+    mode: A
+    backend: icp
+    map_manifest: ''
+    initial_pose_json: ''
+    imu_from_lidar_json: ''
+    alternative_poses_json: '[]'
+    match_hz: 2.0
+    threads: 1
+    radius: 12.0
+    budget_ms: 350.0
+    pair_timeout_s: 0.25
+    stream_timeout_s: 0.75
+    max_stamp_age_s: 0.75
+    max_future_s: 0.10
+    queue_limit: 8
+    record_path: ''
+    save_inputs: false

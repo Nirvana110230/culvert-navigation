@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>culvert_registration</name>
+  <version>0.2.0</version>
+  <description>Offline bounded local registration of body scans in an existing point cloud map.</description>
+  <maintainer email="maintainer@localhost.local">Culvert inspection robot project</maintainer>
+  <license>LicenseRef-Undetermined</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>eigen</depend>
+  <depend>libpcl-all-dev</depend>
+  <depend>libjsoncpp-dev</depend>
+  <depend>openssl</depend>
+  <depend>small_gicp</depend>
+  <test_depend>python3</test_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

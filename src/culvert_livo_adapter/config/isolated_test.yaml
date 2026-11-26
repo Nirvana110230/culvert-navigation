@@ -1,0 +1,19 @@
+culvert_livo_adapter:
+  ros__parameters:
+    profile: isolated_test
+    extrinsics_verified: false
+    calibration_id: SYNTHETIC_TEST_ONLY
+    imu_from_base_xyz_m: [0.20, 0.0, 0.10]
+    imu_from_base_xyzw: [0.0, 0.0, 0.0, 1.0]
+    imu_from_lidar_xyz_m: [-0.011, -0.02329, 0.04412]
+    imu_from_lidar_xyzw: [0.0, 0.0, 0.0, 1.0]
+    max_stamp_age_s: 0.75
+    max_future_s: 0.10
+    pair_timeout_s: 0.25
+    stream_timeout_s: 0.75
+    min_twist_dt_s: 0.001
+    max_twist_dt_s: 0.50
+    # 合成轨迹的跳变门限，不代表底盘实测最高速度。
+    max_linear_mps: 15.0
+    max_angular_radps: 12.0
+    queue_limit: 8

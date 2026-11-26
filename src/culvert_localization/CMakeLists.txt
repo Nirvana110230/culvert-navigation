@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.8)
+project(culvert_localization)
+find_package(ament_cmake REQUIRED)
+install(PROGRAMS scripts/localizer.py DESTINATION lib/${PROJECT_NAME} RENAME localizer)
+install(FILES scripts/localization_io.py DESTINATION lib/${PROJECT_NAME})
+install(DIRECTORY config launch DESTINATION share/${PROJECT_NAME})
+ament_package()

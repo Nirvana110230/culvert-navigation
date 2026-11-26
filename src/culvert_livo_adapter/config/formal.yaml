@@ -1,0 +1,15 @@
+culvert_livo_adapter:
+  ros__parameters:
+    profile: formal
+    extrinsics_verified: false
+    calibration_id: ''
+    max_stamp_age_s: 0.75
+    max_future_s: 0.10
+    pair_timeout_s: 0.25
+    stream_timeout_s: 0.75
+    min_twist_dt_s: 0.001
+    max_twist_dt_s: 0.50
+    queue_limit: 8
+    # 正式运行另需填写 max_linear_mps、max_angular_radps；其依据由部署方核实。
+    # 正式实测后另存配置，填写 imu_from_base_xyz_m、imu_from_base_xyzw、
+    # imu_from_lidar_xyz_m、imu_from_lidar_xyzw，核实安装和标定记录后启用。
