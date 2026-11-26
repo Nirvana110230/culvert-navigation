@@ -1,0 +1,141 @@
+[
+  {
+    "case": "discovery",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "warmup_no_zero_twist",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "normal_pose_velocity",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "single_transform",
+    "pass": true,
+    "detail": [
+      0.7889999747276306,
+      1.9767099618911743,
+      2.944119930267334,
+      7.0
+    ]
+  },
+  {
+    "case": "imu_units_reference",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "tf_owner_and_edges",
+    "pass": true,
+    "detail": [
+      [
+        "test_odom",
+        "test_base_link"
+      ],
+      [
+        "test_base_link",
+        "test_imu"
+      ]
+    ]
+  },
+  {
+    "case": "duplicate_cloud",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "backward_cloud",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "cloud_before_pose",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "unequal_rates",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "unpaired_timeout",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "frame_nan_zero_quaternion_inf",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "nan_cloud_rejected",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "past_stamp_rejected",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "clock_pause_wall_watchdog",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "long_dropout_requires_baseline",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "resume_same_clock_epoch",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "live_clock_input_gap",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "kinematic_jump_suppressed",
+    "pass": true,
+    "detail": "scan:motion_jump_restart_required"
+  },
+  {
+    "case": "diagnosed_duplicate_and_rollback",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "no_actuation_topics",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "case": "launch_exit",
+    "pass": true,
+    "detail": 0
+  },
+  {
+    "case": "formal_unmeasured_extrinsics",
+    "pass": true,
+    "detail": "missing_or_invalid_extrinsics"
+  },
+  {
+    "case": "launch_exit",
+    "pass": true,
+    "detail": 0
+  },
+  {
+    "case": "no_remaining_adapter",
+    "pass": true,
+    "detail": null
+  }
+]

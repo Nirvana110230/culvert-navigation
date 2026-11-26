@@ -1,0 +1,232 @@
+--- a/src/fast_livo/include/IMU_Processing.h
++++ b/src/fast_livo/include/IMU_Processing.h
+@@ -49,6 +49,13 @@
+   void Process2(LidarMeasureGroup &lidar_meas, StatesGroup &stat, PointCloudXYZI::Ptr cur_pcl_un_);
+   void UndistortPcl(LidarMeasureGroup &lidar_meas, StatesGroup &state_inout, PointCloudXYZI &pcl_out);
+ 
++  // The IMU window reached its endpoint and the backward loop visited every point.
++  // Individual point timestamps are also checked when exporting the scan.
++  double deskewed_lio_time = -1.0;
++  const char *deskew_rejection = "no_current_deskew";
++  double deskew_dt_error_s = 0.0, deskew_window_overrun_s = 0.0;
++  bool deskew_points_unconsumed = false, deskew_same_origin = false;
++  double deskew_duration_s = 0.0;
+   double IMU_mean_acc_norm;
+   V3D unbiased_gyr;
+ 
+--- a/src/fast_livo/src/IMU_Processing.cpp
++++ b/src/fast_livo/src/IMU_Processing.cpp
+@@ -252,6 +252,7 @@
+   const double &imu_beg_time = stamp2Sec(v_imu.front()->header.stamp);
+   const double &imu_end_time = stamp2Sec(v_imu.back()->header.stamp);
+   const double prop_beg_time = last_prop_end_time;
++  deskew_same_origin = prop_beg_time == lidar_meas.last_lio_update_time;
+   // printf("[ IMU ] undistort input size: %zu \n", lidar_meas.pcl_proc_cur->points.size());
+   // printf("[ IMU ] IMU data sequence size: %zu \n", meas.imu.size());
+   // printf("[ IMU ] lidar_scan_index_now: %d \n", lidar_meas.lidar_scan_index_now);
+@@ -534,6 +535,23 @@
+ 
+       }
+     }
++    // Do not expose partial propagation, an empty IMU interval, or residual
++    // points outside this slice as a navigation scan. Leave mapper data intact.
++    const double duration = prop_end_time - prop_beg_time;
++    deskew_duration_s = duration;
++    deskew_dt_error_s = std::abs(dt_all - duration);
++    deskew_points_unconsumed = it_pcl != points_end;
++    if (!pcl_wait_proc.empty())
++      deskew_window_overrun_s = std::max(0.0, pcl_wait_proc.back().curvature * 0.001 - duration);
++    if (pcl_wait_proc.empty()) deskew_rejection = "empty_deskew";
++    else if (meas.imu.empty()) deskew_rejection = "no_new_imu";
++    else if (!(duration > 0) || !(deskew_dt_error_s <= 1e-6)) deskew_rejection = "dt_coverage";
++    else if (pcl_wait_proc.front().curvature < 0) deskew_rejection = "point_before_window";
++    else if (deskew_points_unconsumed) deskew_rejection = "points_unconsumed";
++    else {
++      deskew_rejection = nullptr;
++      deskewed_lio_time = prop_end_time;
++    }
+     pcl_out = pcl_wait_proc;
+     pcl_wait_proc.clear();
+     IMUpose.clear();
+@@ -545,6 +563,11 @@
+ {
+   double t1, t2, t3;
+   t1 = omp_get_wtime();
++  deskewed_lio_time = -1.0;
++  deskew_rejection = "no_current_deskew";
++  deskew_dt_error_s = deskew_window_overrun_s = 0.0;
++  deskew_points_unconsumed = deskew_same_origin = false;
++  deskew_duration_s = 0.0;
+   rcpputils::assert_true(lidar_meas.lidar != nullptr);
+   if (!imu_en)
+   {
+--- a/src/fast_livo/include/LIVMapper.h
++++ b/src/fast_livo/include/LIVMapper.h
+@@ -13,6 +13,7 @@
+ #ifndef LIV_MAPPER_H
+ #define LIV_MAPPER_H
+ 
++#include <map>
+ #include "IMU_Processing.h"
+ #include "vio.h"
+ #include "preprocess.h"
+@@ -41,6 +42,13 @@
+   void stateEstimationAndMapping();
+   void handleVIO();
+   void handleLIO();
++  void publishCulvertSource();
++  std::map<std::string, uint64_t> culvert_rejections;
++  uint64_t culvert_attempts = 0, culvert_pairs = 0, culvert_empty_lio = 0;
++  uint64_t culvert_partial = 0, culvert_dt_miss = 0, culvert_overrun = 0;
++  double culvert_max_dt_error_s = 0.0, culvert_max_overrun_s = 0.0;
++  uint64_t culvert_trimmed_frames = 0, culvert_trimmed_points = 0;
++  double culvert_max_trim_fraction = 0.0;
+   void savePCD();
+   void processImu();
+   
+@@ -177,6 +185,8 @@
+   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubLaserCloudEffect;
+   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubLaserCloudMap;
+   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pubOdomAftMapped;
++  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pubCulvertState;
++  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubCulvertScan;
+   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pubPath;
+   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubLaserCloudDyn;
+   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubLaserCloudDynRmed;
+--- a/src/fast_livo/src/LIVMapper.cpp
++++ b/src/fast_livo/src/LIVMapper.cpp
+@@ -310,6 +310,8 @@
+   pubLaserCloudEffect = this->node->create_publisher<sensor_msgs::msg::PointCloud2>("/cloud_effected", 100);
+   pubLaserCloudMap = this->node->create_publisher<sensor_msgs::msg::PointCloud2>("/Laser_map", 100);
+   pubOdomAftMapped = this->node->create_publisher<nav_msgs::msg::Odometry>("/aft_mapped_to_init", 10);
++  pubCulvertState = this->node->create_publisher<nav_msgs::msg::Odometry>("/culvert_source/state", 5);
++  pubCulvertScan = this->node->create_publisher<sensor_msgs::msg::PointCloud2>("/culvert_source/scan", 5);
+   pubPath = this->node->create_publisher<nav_msgs::msg::Path>("/path", 10);
+   plane_pub = this->node->create_publisher<visualization_msgs::msg::Marker>("/planner_normal", 1);
+   voxel_pub = this->node->create_publisher<visualization_msgs::msg::MarkerArray>("/voxels", 1);
+@@ -441,6 +443,7 @@
+            
+   if (feats_undistort->empty() || (feats_undistort == nullptr)) 
+   {
++    ++culvert_empty_lio;
+     std::cout << "[ LIO ]: No point!!!" << std::endl;
+     return;
+   }
+@@ -506,6 +509,7 @@
+   euler_cur = RotMtoEuler(_state.rot_end);
+   geoQuat = tf::createQuaternionMsgFromRollPitchYaw(euler_cur(0), euler_cur(1), euler_cur(2));
+   publish_odometry(pubOdomAftMapped);
++  publishCulvertSource();
+ 
+   double t3 = omp_get_wtime();
+ 
+@@ -664,6 +668,23 @@
+            << ',' << vio_manager->visual_update_frames << ',' << vio_manager->visual_update_steps << ',' << synced << std::endl;
+     }
+   }
++  std::ofstream source_counts("Log/culvert_source_counts.json");
++  source_counts << std::setprecision(17) << "{\"attempts_after_odom\":" << culvert_attempts
++                << ",\"published_pairs\":" << culvert_pairs << ",\"empty_before_odom\":" << culvert_empty_lio
++                << ",\"any_unconsumed\":" << culvert_partial << ",\"any_dt_miss\":" << culvert_dt_miss
++                << ",\"any_tail_overrun\":" << culvert_overrun << ",\"max_dt_error_s\":" << culvert_max_dt_error_s
++                << ",\"max_tail_overrun_s\":" << culvert_max_overrun_s
++                << ",\"published_trimmed_frames\":" << culvert_trimmed_frames
++                << ",\"published_trimmed_points\":" << culvert_trimmed_points
++                << ",\"max_published_trim_fraction\":" << culvert_max_trim_fraction << ",\"first_rejection\":{";
++  bool first_reason = true;
++  for (const auto &reason : culvert_rejections) {
++    if (!first_reason) source_counts << ',';
++    source_counts << '"' << reason.first << "\":" << reason.second;
++    first_reason = false;
++  }
++  source_counts << "}}" << std::endl;
++  if (!source_counts) RCLCPP_ERROR(node->get_logger(), "Writing Log/culvert_source_counts.json failed");
+   std::ofstream counts("Log/input_counters.json");
+   counts << "{\"lidar_rx\":" << eval_lidar_rx.load() << ",\"imu_rx\":" << eval_imu_rx.load() << ",\"synced\":" << synced
+          << ",\"image_rx\":" << eval_image_rx.load() << ",\"image_remaining\":" << img_buffer.size()
+@@ -1461,6 +1482,85 @@
+   out.orientation.w = geoQuat.w;
+ }
+ 
++void LIVMapper::publishCulvertSource()
++{
++  ++culvert_attempts;
++  auto reject = [this](const char *reason) { ++culvert_rejections[reason]; };
++  culvert_partial += p_imu->deskew_points_unconsumed;
++  culvert_dt_miss += p_imu->deskew_dt_error_s > 1e-6;
++  culvert_overrun += p_imu->deskew_window_overrun_s > 1e-6;
++  culvert_max_dt_error_s = std::max(culvert_max_dt_error_s, p_imu->deskew_dt_error_s);
++  culvert_max_overrun_s = std::max(culvert_max_overrun_s, p_imu->deskew_window_overrun_s);
++  if (LidarMeasures.lio_vio_flg != LIO || LidarMeasures.measures.empty()) return reject("not_lio_cycle");
++  if (p_imu->deskew_rejection) return reject(p_imu->deskew_rejection);
++  if (voxelmap_manager->ptpl_list_.empty()) return reject("no_point_plane_match");
++  const double t = p_imu->deskewed_lio_time;
++  if (!std::isfinite(t) || t <= 0 || t != LidarMeasures.measures.back().lio_time ||
++      t != LidarMeasures.last_lio_update_time) return reject("cycle_time_mismatch");
++  if (!_state.pos_end.allFinite() || !_state.rot_end.allFinite()) return reject("nonfinite_pose");
++  Eigen::Quaterniond q(_state.rot_end);
++  if (!std::isfinite(q.norm()) || q.norm() < 1e-9) return reject("invalid_quaternion");
++  q.normalize();
++
++  pcl::PointCloud<pcl::PointXYZI> scan;
++  scan.reserve(feats_undistort->size());
++  double previous_ms = 0;
++  for (const auto &point : *feats_undistort)
++  {
++    if (!std::isfinite(point.curvature)) return reject("nonfinite_point_time");
++    if (point.curvature < previous_ms) return reject("point_time_unordered");
++    if (!std::isfinite(point.x) || !std::isfinite(point.y) ||
++        !std::isfinite(point.z) || !std::isfinite(point.intensity)) return reject("nonfinite_xyzi");
++    previous_ms = point.curvature;
++    // Keep v2's per-point window; omit only certified late points from this copy.
++    if (point.curvature * 0.001 > p_imu->deskew_duration_s + 1e-6) continue;
++    pcl::PointXYZI p;
++    p.x = point.x;
++    p.y = point.y;
++    p.z = point.z;
++    p.intensity = point.intensity;
++    scan.push_back(p);
++  }
++  const int64_t stamp_ns = static_cast<int64_t>(std::llround(t * 1e9));
++  const size_t total = feats_undistort->size(), removed = total - scan.size();
++  if (removed) {
++    const double fraction = static_cast<double>(removed) / total;
++    const char *failure = nullptr;
++    if (slam_mode_ != LIVO || !p_imu->deskew_same_origin) failure = "uncertain_window_origin";
++    else if (p_imu->deskew_window_overrun_s > 0.0005) failure = "excessive_tail_time";
++    else if (fraction > 0.01 || scan.empty()) failure = "excessive_tail_fraction";
++    static RollingCsv tail("Log/culvert_source_tail.csv",
++        "stamp_ns,input_points,outside_points,inside_points,outside_fraction,tail_overrun_s,decision");
++    tail.row() << std::setprecision(17) << stamp_ns << ',' << total << ',' << removed << ','
++               << scan.size() << ',' << fraction << ',' << p_imu->deskew_window_overrun_s
++               << ',' << (failure ? failure : "publish_trimmed") << '\n';
++    if (failure) return reject(failure);
++    ++culvert_trimmed_frames;
++    culvert_trimmed_points += removed;
++    culvert_max_trim_fraction = std::max(culvert_max_trim_fraction, fraction);
++  }
++  sensor_msgs::msg::PointCloud2 cloud;
++  pcl::toROSMsg(scan, cloud);
++  cloud.header.frame_id = "livo_lidar";
++  cloud.header.stamp = rclcpp::Time(stamp_ns, RCL_ROS_TIME);
++
++  nav_msgs::msg::Odometry state;
++  state.header.stamp = cloud.header.stamp;
++  state.header.frame_id = "camera_init";
++  state.child_frame_id = "imu";
++  auto &pose = state.pose.pose;
++  pose.position.x = _state.pos_end.x();
++  pose.position.y = _state.pos_end.y();
++  pose.position.z = _state.pos_end.z();
++  pose.orientation.x = q.x();
++  pose.orientation.y = q.y();
++  pose.orientation.z = q.z();
++  pose.orientation.w = q.w();
++  pubCulvertState->publish(state);
++  pubCulvertScan->publish(cloud);
++  ++culvert_pairs;
++}
++
+ void LIVMapper::publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr &pubOdomAftMapped)
+ {
+   odomAftMapped.header.frame_id = "camera_init";

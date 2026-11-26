@@ -1,0 +1,13 @@
+{
+  "dataset_sha256": "023f00994ef6d90d0a4d12968e4f706f87849c1e34d637166ce795ae778b892f",
+  "split_counts": {
+    "debug": 62,
+    "tune": 62,
+    "holdout": 62,
+    "scale": 3,
+    "r1": 2,
+    "history": 6
+  },
+  "distinct_clouds_verified": 86,
+  "history_exclusions_verified": 6
+}

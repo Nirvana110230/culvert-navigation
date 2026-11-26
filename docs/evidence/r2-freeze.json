@@ -1,0 +1,22 @@
+{
+  "protocol": {
+    "radius": 12.0,
+    "budget_ms": 500.0,
+    "good_translation_m": 0.15,
+    "good_rotation_deg": 3.0,
+    "ambiguity_rmse_m": 0.025,
+    "ambiguity_overlap": 0.08,
+    "distinct_translation_m": 0.75,
+    "distinct_rotation_deg": 12.0,
+    "cold_repeats": 2,
+    "hot_repeats": 9,
+    "seeds": [
+      41713,
+      68023,
+      93487
+    ]
+  },
+  "binary_sha256": "912f30512f2d6ebea6febd13583a5d37982b85e1b91cb5a9b28d9b60a9da8cad",
+  "dataset_sha256": "023f00994ef6d90d0a4d12968e4f706f87849c1e34d637166ce795ae778b892f",
+  "runner_sha256": "3b4d6c2cb897b9516b8c3d4915ec12f092a80fda84d2ad3df9301e480502fc8a"
+}

@@ -1,0 +1,281 @@
+[
+  {
+    "case": "isolated_domain",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "scan_before_pose",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "A_single_extrinsic",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "save_inputs",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "pose_before_scan",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "candidate_measurement_stamp",
+    "passed": true,
+    "detail": {
+      "expected_ns": 25044000000,
+      "candidates": [
+        [
+          25022000000,
+          "test_map",
+          null
+        ],
+        [
+          25044000000,
+          "test_map",
+          null
+        ]
+      ],
+      "corrections": [
+        [
+          25022000000,
+          "test_map",
+          "camera_init"
+        ],
+        [
+          25044000000,
+          "test_map",
+          "camera_init"
+        ]
+      ]
+    }
+  },
+  {
+    "case": "duplicate",
+    "passed": true,
+    "detail": "duplicate"
+  },
+  {
+    "case": "out_of_order",
+    "passed": true,
+    "detail": "out_of_order"
+  },
+  {
+    "case": "wrong_frame",
+    "passed": true,
+    "detail": "frame_mismatch"
+  },
+  {
+    "case": "invalid_quaternion",
+    "passed": true,
+    "detail": "invalid_quaternion"
+  },
+  {
+    "case": "nonfinite_geometry",
+    "passed": true,
+    "detail": "nonfinite_cloud"
+  },
+  {
+    "case": "stale",
+    "passed": true,
+    "detail": "stale_stamp"
+  },
+  {
+    "case": "future",
+    "passed": true,
+    "detail": "future_stamp"
+  },
+  {
+    "case": "zero",
+    "passed": true,
+    "detail": "zero_stamp"
+  },
+  {
+    "case": "nanosecond_mismatch",
+    "passed": true,
+    "detail": "pair_timeout"
+  },
+  {
+    "case": "bounded_pair_queue",
+    "passed": true,
+    "detail": "queue_overflow"
+  },
+  {
+    "case": "inputs_stopped_with_clock_advancing",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "paused_clock",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "late_backend_over_budget",
+    "passed": true,
+    "detail": "match_timeout"
+  },
+  {
+    "case": "backend_identity_mismatch",
+    "passed": true,
+    "detail": "result_identity_mismatch"
+  },
+  {
+    "case": "reject_invalid_backend_SE3",
+    "passed": true,
+    "detail": "invalid_result_invalid_SE3"
+  },
+  {
+    "case": "late_reply_discarded_after_reload",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "map_generation_changes",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "resume_after_same_map_reload",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "old_seed_blocked_in_new_map",
+    "passed": true,
+    "detail": "initial_map_mismatch"
+  },
+  {
+    "case": "explicit_new_map_anchor",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "map_hash_load_failure",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "old_map_blocked_on_load_failure",
+    "passed": true,
+    "detail": "map_load_failed"
+  },
+  {
+    "case": "hung_worker_deadline_while_running",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "ROS_responds_while_worker_busy",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "overdue_result_naturally_completed",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "same_worker_next_match",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "worker_process_exit",
+    "passed": true,
+    "detail": "worker_failure"
+  },
+  {
+    "case": "worker_failure_requires_reload",
+    "passed": true,
+    "detail": "worker_requires_reload"
+  },
+  {
+    "case": "reload_worker_recovery",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "clock_rollback_latched",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "rollback_requires_restart",
+    "passed": true,
+    "detail": "clock_rollback_restart_required"
+  },
+  {
+    "case": "transport_clean_exit",
+    "passed": true,
+    "detail": 0
+  },
+  {
+    "case": "map_absent",
+    "passed": true,
+    "detail": "map_not_configured"
+  },
+  {
+    "case": "no_map_clean_exit",
+    "passed": true,
+    "detail": 0
+  },
+  {
+    "case": "seed_absent",
+    "passed": true,
+    "detail": "no_initial_pose"
+  },
+  {
+    "case": "no_seed_clean_exit",
+    "passed": true,
+    "detail": 0
+  },
+  {
+    "case": "ambiguous_external_priors",
+    "passed": true,
+    "detail": "ambiguous_initial_hypotheses"
+  },
+  {
+    "case": "ambiguous_clean_exit",
+    "passed": true,
+    "detail": 0
+  },
+  {
+    "case": "B_accept",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "B_no_extrinsic_reapplication",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "latest_only_and_two_hz",
+    "passed": true,
+    "detail": [
+      0.517973644,
+      0.500934682
+    ]
+  },
+  {
+    "case": "unique_scan_submission",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "no_actuation_or_tf",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "B_clean_exit",
+    "passed": true,
+    "detail": 0
+  }
+]

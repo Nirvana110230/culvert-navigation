@@ -45,7 +45,20 @@
     "culvert_livo_adapter": "LicenseRef-Undetermined",
     "culvert_registration": "LicenseRef-Undetermined；保留 legacy、Sophus、nanoflann、small_gicp notices",
     "culvert_localization": "包声明 Apache-2.0",
-    "small_gicp": "MIT；冻结压缩包与展开源码保存在受限介质"
+    "small_gicp": "MIT；third_party/small_gicp 含 R2 实际编译所需的冻结源，完整上游压缩包的 SHA256 列于本文件。"
   },
-  "distribution": "本地交接，权属、设备信息复核完成前禁止上传。"
+  "distribution": "G3 已获授权归入指定私有工程仓。各组件的原有许可沿用；项目自有包的权属状态见 licenses。",
+  "isolated_v3": {
+    "source_files": 33,
+    "board_executable_sha256": "11f84bef10cf79c6be904862b1fe5b39a0cc204e97c7b8026be6f306c1f8754f",
+    "patch_sha256": "8454af256a47e91e9aa9ea7576ac9f2ea1bf1e6ffea9e751fcc56d5c30f0c12e",
+    "source_manifest": "docs/evidence/v3-source-sha256.json"
+  },
+  "worker": {
+    "package": "culvert_registration",
+    "target": "registration_server",
+    "installed_arm64_sha256": "912f30512f2d6ebea6febd13583a5d37982b85e1b91cb5a9b28d9b60a9da8cad",
+    "build_tree_arm64_sha256": "ab3487307db80b155cd2b9b8488720147b77bf8cd7169a2504a8dc7407055053",
+    "source_manifest": "docs/evidence/board-package-sources.json"
+  }
 }

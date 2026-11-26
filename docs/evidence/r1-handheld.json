@@ -1,0 +1,21 @@
+{
+  "source_metric_sha256": "36580673c4529469c1ec0425bf12878bcae2bd9f93271bf4ab86854c18e5c375",
+  "scene": "handheld",
+  "replay_eof": true,
+  "counts": {
+    "/culvert_source/state": 576,
+    "/culvert_source/scan": 576,
+    "/culvert_test/odom": 575,
+    "/culvert_test/localization_cloud": 575
+  },
+  "paired_state_scan": 576,
+  "chain": {
+    "exact_observations": 575,
+    "unique_stamps": 575,
+    "over_observed_clouds": {
+      "numerator": 575,
+      "denominator": 575,
+      "fraction": 1.0
+    }
+  }
+}

@@ -1,0 +1,9 @@
+* text=auto eol=lf
+# Preserve exact bytes of board and upstream source snapshots.
+isolated/v3/** -text
+third_party/small_gicp/** -text
+patches/** -text
+docs/evidence/** -text
+benchmarks/r2/results/cases.csv -text
+src/culvert_registration/licenses/nanoflann-notice.txt -text
+src/culvert_registration/licenses/sophus-notice.txt -text

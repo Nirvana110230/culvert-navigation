@@ -1,0 +1,54 @@
+{
+  "platform": "Ubuntu 22.04 WSL x86_64, ROS 2 Humble",
+  "build_type": "Release",
+  "installed": [
+    "small_gicp",
+    "culvert_livo_adapter",
+    "culvert_registration",
+    "culvert_localization"
+  ],
+  "registration_ctest": [
+    {
+      "case": "registration_protocol",
+      "passed": true
+    },
+    {
+      "case": "registration_checked_binding",
+      "passed": true
+    },
+    {
+      "case": "registration_invalid_map_preserves_generation",
+      "passed": true
+    }
+  ],
+  "r1_gtest": {
+    "tests": 11,
+    "errors": 0,
+    "failures": 0,
+    "disabled": 0
+  },
+  "r1_ros": {
+    "count": 25,
+    "passed": 25,
+    "local_evidence_sha256": "426241bd9cb81ef81da00cbf9b8784b0f4c702e400596fce3172d463119409fd"
+  },
+  "r2_ros": {
+    "count": 50,
+    "passed": 50,
+    "local_evidence_sha256": "171f02c6b69e279c2973a4b37cc0ff2a77ad889203cb2d13b1ebbe0941188fbf"
+  },
+  "worker_x86_64_sha256": "74fbd82c1861258da633f15d0808b4ad5a1d5e8f4fd5b23f8dc2e059a1d12b10",
+  "r1_synthetic_fixture": {
+    "map.pcd": "a15c150db92925a9ad1a86041b6f9ae5d33dde8e5be0eef982ed652afa0d0d05",
+    "scan.pcd": "683aaee8b2a74116aa2b8e3f59559c3f2edaf6a748b076655e91f5b2dcb5ed4a"
+  },
+  "arm64_live_rebuild_performed": false,
+  "isolated_v3": {
+    "target": "fastlivo_mapping",
+    "platform": "x86_64",
+    "built_from_board_verified_source": true,
+    "ldd_all_dependencies_resolved": true,
+    "sha256": "f54228c022108ac313c78be42243bfb9c1e9b10ce2d07891eb529ab6ad58dbd4"
+  },
+  "worker_ldd_all_dependencies_resolved": true
+}

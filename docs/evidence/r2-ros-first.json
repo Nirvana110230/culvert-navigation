@@ -1,0 +1,32 @@
+[
+  {
+    "case": "isolated_domain",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "scan_before_pose",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "A_single_extrinsic",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "save_inputs",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "case": "pose_before_scan",
+    "passed": true,
+    "detail": "accepted"
+  },
+  {
+    "case": "candidate_measurement_stamp",
+    "passed": false,
+    "detail": ""
+  }
+]
