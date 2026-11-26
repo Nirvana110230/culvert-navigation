@@ -1,0 +1,50 @@
+# 本地环境、认证材料及设备访问配置
+.env
+.env.*
+*.pem
+*.ppk
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.ssh/
+.git-credentials
+MobaXterm.ini
+
+# ROS、CMake、Python 与原生构建输出
+build/
+install/
+log/
+CMakeFiles/
+CMakeCache.txt
+__pycache__/
+*.py[cod]
+*.o
+*.so
+*.so.*
+*.a
+*.elf
+
+# 原始测量和运行档案
+rosbag2_*/
+raw_bag/
+*.bag
+*.db3
+*.mcap
+*.pcd
+*.ply
+*.mp4
+*.mkv
+*.avi
+
+# 归档、安装器与镜像
+*.zip
+*.tar
+*.tgz
+*.tar.gz
+*.7z
+*.rar
+*.deb
+*.iso
+*.img
